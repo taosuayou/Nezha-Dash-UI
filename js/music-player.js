@@ -142,6 +142,7 @@ function initMusicPlayer() {
     border-radius: 15px;
     width: auto !important;
     height: auto !important;
+    overflow: visible; /* 允许播放列表弹出容器上方 */
   }
 
   /* ==================== 主内容区 ==================== */
@@ -160,7 +161,7 @@ function initMusicPlayer() {
   .music-player-container.expanded .music-player-main {
     padding: 10px;
     gap: 12px;
-    overflow: visible; /* 展开时允许内容溢出 */
+    overflow: hidden; /* 内容限制在容器内 */
   }
 
   /* ==================== 悬浮球封面（收起状态） ==================== */
@@ -321,11 +322,11 @@ function initMusicPlayer() {
   /* ==================== 信息和控制区域 ==================== */
   .music-info-section {
     flex: 1;
-    min-width: fit-content;
+    min-width: 0; /* 允许flex子项收缩，防止溢出 */
     opacity: 0;
     display: none;
     flex-direction: column;
-    overflow: visible;
+    overflow: hidden;
     align-items: stretch;
   }
 
@@ -442,9 +443,6 @@ function initMusicPlayer() {
     .music-player-container.expanded {
       max-width: 90vw;
     }
-    .music-info-section {
-      max-width: 60vw;
-    }
     .music-controls {
       flex-wrap: wrap;
       gap: 4px;
@@ -465,6 +463,16 @@ function initMusicPlayer() {
     }
     .music-progress-bar {
       height: 6px;
+    }
+    .music-progress-section {
+      min-width: 0; /* 防止进度条溢出 */
+    }
+    .music-time {
+      font-size: 10px;
+      white-space: nowrap;
+    }
+    .music-track-info {
+      min-width: 0; /* 允许文字截断 */
     }
   }
 
@@ -830,7 +838,6 @@ function initMusicPlayer() {
   nextBtn.title = "下一曲";
 
   const listBtnWrapper = document.createElement("div");
-  listBtnWrapper.style.position = "relative";
 
   const listBtn = document.createElement("button");
   listBtn.className = "music-btn";
@@ -892,7 +899,7 @@ function initMusicPlayer() {
   
   playlistInner.appendChild(playlistContent);
   playlistDiv.append(playlistHeader, playlistInner);
-  listBtnWrapper.appendChild(playlistDiv);
+  container.appendChild(playlistDiv); // 直接挂载到容器，避免被 mainSection 的 overflow:hidden 裁剪
 
   // 获取音量输入控件
   const volumeInput = volumeSlider.querySelector('input');
